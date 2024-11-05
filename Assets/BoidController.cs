@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.TerrainTools;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class BoidController : MonoBehaviour
 {
