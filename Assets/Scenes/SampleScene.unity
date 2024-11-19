@@ -245,7 +245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boidPrefab: {fileID: 5170309424040522722, guid: 880a36da7152b3444a93f951d7126eb5, type: 3}
-  numBoids: 2
+  numBoids: 100
   ShowDirection: 0
 --- !u!4 &2044372095
 Transform:

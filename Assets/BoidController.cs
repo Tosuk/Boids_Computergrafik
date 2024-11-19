@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -6,7 +7,16 @@ using UnityEngine;
 
 public class BoidController : MonoBehaviour
 {
-    private List<Boid> boids = new List<Boid>();
+    //[HideInInspector]
+    private static List<Boid> boids = new List<Boid>();
+
+    [Range(1, 10)]
+    public static int alignWeight = 3;
+    [Range(1, 10)]
+    public static int cohesionWeight = 10;
+    [Range(1, 10)]
+    public static int avoidenceWeight = 5;
+
     public GameObject boidPrefab;
     [Range(1, 100)]
     public int numBoids = 10;
@@ -17,7 +27,7 @@ public class BoidController : MonoBehaviour
     {
         for (int i = 0; i < numBoids; i++)
         {
-            Vector3 pos = new Vector3(Random.Range(-8, 8), Random.Range(-4.9f, 4.9f), 0);
+            Vector3 pos = new Vector3(UnityEngine.Random.Range(-8, 8), UnityEngine.Random.Range(-4.9f, 4.9f), 0);
             GameObject boid = Instantiate(boidPrefab, pos, Quaternion.identity);
             boid.transform.parent = transform;
             boids.Add(boid.GetComponent<Boid>());
@@ -29,10 +39,6 @@ public class BoidController : MonoBehaviour
     {
         BoidCount();
         OnBecameInvisible();
-        //foreach (Boid boid in boids)
-        //{
-        //    boid.UpdateBoid();
-        //}
     }
 
     private void OnDrawGizmos()
@@ -40,18 +46,18 @@ public class BoidController : MonoBehaviour
         foreach (Boid boid in boids)
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawRay(boid.transform.position, boid.velocity);
+            //Gizmos.DrawRay(boid.transform.position, boid.velocity);
         }
     }
 
-   private void BoidCount() 
+    private void BoidCount()
     {
         int currentBoids = boids.Count;
         if (currentBoids < numBoids)
         {
             for (int i = 0; i < numBoids - boids.Count; i++)
             {
-                Vector3 pos = new Vector3(Random.Range(-8, 8), Random.Range(-4.9f, 4.9f), 0);
+                Vector3 pos = new Vector3(UnityEngine.Random.Range(-8, 8), UnityEngine.Random.Range(-4.9f, 4.9f), 0);
                 GameObject boid = Instantiate(boidPrefab, pos, Quaternion.identity);
                 boid.transform.parent = transform;
                 boids.Add(boid.GetComponent<Boid>());
@@ -90,5 +96,10 @@ public class BoidController : MonoBehaviour
                 boid.transform.position = new Vector3(pos.x, 6f, pos.z);
             }
         }
+    }
+
+    public static List<Boid> GetBoids()
+    {
+        return boids;
     }
 }

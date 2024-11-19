@@ -22,7 +22,8 @@ public class BoidFieldofview
 
             float x = Mathf.Sin(inclination) * Mathf.Cos(azimuth);
             float y = Mathf.Sin(inclination) * Mathf.Sin(azimuth);
-            float z = Mathf.Cos(inclination);
+            //float z = Mathf.Cos(inclination);
+            float z = 0;
 
             directions[i] = new Vector3(x, y, z);
         }

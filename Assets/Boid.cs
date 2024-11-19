@@ -12,9 +12,11 @@ public class Boid : MonoBehaviour
     public float maxForce = 0.03f;
     public float mass = 1f;
     public float perceptionRadius = 1f;
-    public float avoidanceRadius = 0.5f;
+    public float avoidanceRadius = 10/*0.5f*/;
     public float separationRadius = 0.5f;
     public LayerMask obstacleMask; // Layermask for obstacles
+
+    BoidCharakteristic boidCharakteristic;
 
     private void Start()
     {
@@ -29,22 +31,28 @@ public class Boid : MonoBehaviour
 
     public void UpdateBoid()
     {
-        // Zufällige Beschleunigung hinzufügen
-        //Vector3 randomAcceleration = new Vector3(Random.Range(-maxForce, maxForce), Random.Range(-maxForce, maxForce), 0);
-        //ApplyForce(randomAcceleration);
+        //// Seperation (Abstand halten)
+        //Vector3 collisionAvoidDir = ObstacleAvoidance();
+        //if (collisionAvoidDir != Vector3.zero)
+        //{
+        //    Vector3 avoidForce = SteerAvoidence(collisionAvoidDir);
+        //    ApplyForce(avoidForce * BoidController.avoidenceWeight);
+        //}
 
-        // Kollisionsvermeidung
-        if (IsHeadingForCollision())
+        //// alignment (Ausrichtung)
+        //Vector3 alignment = GetLineAlignment();
+        //if (alignment != Vector3.zero)
+        //{
+        //    ApplyForce(alignment * BoidController.alignWeight);
+        //}
+
+        // Cohesion (Zusammenhalt)
+        Vector3 cohesion = GetCohesion();
+        if(cohesion != Vector3.zero)
         {
-            Vector3 collisionAvoidDir = ObstacleAvoidance();
-            if (collisionAvoidDir != Vector3.zero)
-            {
-                Vector3 avoidForce = SteerAvoidence(collisionAvoidDir) * 10f;
-                ApplyForce(avoidForce);
-            }
+            Vector3 cohesionForce = SteerAvoidence(transform.position - cohesion);
+            ApplyForce(cohesionForce * BoidController.cohesionWeight);
         }
- 
-
 
         // Geschwindigkeit aktualisieren
         velocity += acceleration * Time.deltaTime;
@@ -67,7 +75,7 @@ public class Boid : MonoBehaviour
 
     private void ApplyForce(Vector3 force)
     {
-        Debug.DrawRay(transform.position, force, Color.blue);
+        //Debug.DrawRay(transform.position, force, Color.blue);
         acceleration += force;
     }
 
@@ -95,23 +103,76 @@ public class Boid : MonoBehaviour
 
     public Vector3 ObstacleAvoidance()
     {
-        Vector3[] rayDirections = BoidFieldofview.directions;
-
-        for (int i = 0; i < rayDirections.Length; i++)
+        Vector3 avoidenceVector = Vector3.zero;
+        int avoidenceCount = 0; // Anzahl der Boids, die vermieden werden
+        List<Boid> boids = BoidController.GetBoids();
+        foreach (Boid boid in boids)
         {
-            Vector3 dir = transform.TransformDirection(rayDirections[i]);
-            Ray ray = new Ray(transform.position, dir);
-            if (!Physics.SphereCast(ray, 0.27f, 5, obstacleMask))
+            if (boid != this)
             {
-                Debug.DrawRay(transform.position, dir * 5, Color.green);
-                return dir;
-            }
-            else
-            {
-                Debug.DrawRay(transform.position, dir * 5, Color.red);
+                Vector3 diff = transform.position - boid.transform.position;
+                //Debug.DrawRay(transform.position, diff, Color.green);
+                if (diff.magnitude < avoidanceRadius)
+                {
+                    avoidenceVector += diff.normalized / diff.magnitude;
+                    avoidenceCount++;
+                    //Debug.DrawRay(transform.position, diff, Color.red);
+                }
             }
         }
-        return Vector3.zero;
+        if (avoidenceCount > 0)
+        {
+            avoidenceVector /= avoidenceCount;
+        }
+        return avoidenceVector;
+    }
+
+    public Vector3 GetLineAlignment()
+    {
+        List<Boid> boids = BoidController.GetBoids();
+        Vector3 averageHeading = Vector3.zero;
+        int neighbourCount = 0;
+        foreach (Boid boid in boids)
+        {
+            if (boid != this)
+            {
+                float distance = Vector3.Distance(transform.position, boid.transform.position);
+                if (distance < perceptionRadius)
+                {
+                    averageHeading += boid.velocity;
+                    neighbourCount++;
+                }
+            }
+        }
+        if (neighbourCount > 0)
+        {
+            averageHeading /= neighbourCount;
+        }
+        return averageHeading;
+    }
+
+    public Vector3 GetCohesion()
+    {
+        List<Boid> boids = BoidController.GetBoids();
+        Vector3 averagePosition = Vector3.zero;
+        int neighbourCount = 0;
+        foreach (Boid boid in boids)
+        {
+            if (boid != this)
+            {
+                float distance = Vector3.Distance(transform.position, boid.transform.position);
+                if (distance < perceptionRadius)
+                {
+                    averagePosition += boid.transform.position;
+                    neighbourCount++;
+                }
+            }
+        }
+        if (neighbourCount > 0)
+        {
+            averagePosition /= neighbourCount;
+        }
+        return averagePosition;
     }
 }
 
