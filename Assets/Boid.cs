@@ -12,7 +12,7 @@ public class Boid : MonoBehaviour
     public float maxForce = 0.03f;
     public float mass = 1f;
     public float perceptionRadius = 1f;
-    public float avoidanceRadius = 10/*0.5f*/;
+    public float avoidanceRadius = 1;
     public float separationRadius = 0.5f;
     public LayerMask obstacleMask; // Layermask for obstacles
 
@@ -31,26 +31,26 @@ public class Boid : MonoBehaviour
 
     public void UpdateBoid()
     {
-        //// Seperation (Abstand halten)
-        //Vector3 collisionAvoidDir = ObstacleAvoidance();
-        //if (collisionAvoidDir != Vector3.zero)
-        //{
-        //    Vector3 avoidForce = SteerAvoidence(collisionAvoidDir);
-        //    ApplyForce(avoidForce * BoidController.avoidenceWeight);
-        //}
+        // Seperation (Abstand halten)
+        Vector3 collisionAvoidDir = ObstacleAvoidance();
+        if (collisionAvoidDir != Vector3.zero)
+        {
+            Vector3 avoidForce = SteerAvoidence(collisionAvoidDir);
+            ApplyForce(avoidForce * BoidController.avoidenceWeight);
+        }
 
-        //// alignment (Ausrichtung)
-        //Vector3 alignment = GetLineAlignment();
-        //if (alignment != Vector3.zero)
-        //{
-        //    ApplyForce(alignment * BoidController.alignWeight);
-        //}
+        // alignment (Ausrichtung)
+        Vector3 alignment = GetLineAlignment();
+        if (alignment != Vector3.zero)
+        {
+            ApplyForce(alignment * BoidController.alignWeight);
+        }
 
         // Cohesion (Zusammenhalt)
         Vector3 cohesion = GetCohesion();
         if(cohesion != Vector3.zero)
         {
-            Vector3 cohesionForce = SteerAvoidence(transform.position - cohesion);
+            Vector3 cohesionForce = SteerAvoidence(cohesion);
             ApplyForce(cohesionForce * BoidController.cohesionWeight);
         }
 
@@ -163,6 +163,7 @@ public class Boid : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, boid.transform.position);
                 if (distance < perceptionRadius)
                 {
+                    //Debug.DrawRay(transform.position, boid.transform.position - transform.position, Color.blue);
                     averagePosition += boid.transform.position;
                     neighbourCount++;
                 }
@@ -172,7 +173,7 @@ public class Boid : MonoBehaviour
         {
             averagePosition /= neighbourCount;
         }
-        return averagePosition;
+        return averagePosition - transform.position;
     }
 }
 

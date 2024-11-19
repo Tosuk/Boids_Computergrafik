@@ -11,9 +11,9 @@ public class BoidController : MonoBehaviour
     private static List<Boid> boids = new List<Boid>();
 
     [Range(1, 10)]
-    public static int alignWeight = 3;
+    public static int alignWeight = 2;
     [Range(1, 10)]
-    public static int cohesionWeight = 10;
+    public static int cohesionWeight = 2;
     [Range(1, 10)]
     public static int avoidenceWeight = 5;
 

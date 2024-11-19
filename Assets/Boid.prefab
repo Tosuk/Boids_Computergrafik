@@ -102,7 +102,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 1, y: 1, z: 0}
   maxSpeed: 8
-  maxForce: 0.3
+  maxForce: 1
   mass: 1
   perceptionRadius: 1
   avoidanceRadius: 0.5
