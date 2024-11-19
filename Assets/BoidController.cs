@@ -11,11 +11,11 @@ public class BoidController : MonoBehaviour
     private static List<Boid> boids = new List<Boid>();
 
     [Range(1, 10)]
-    public static int alignWeight = 2;
+    public static int alignWeight = 5;
     [Range(1, 10)]
-    public static int cohesionWeight = 2;
+    public static int cohesionWeight = 5;
     [Range(1, 10)]
-    public static int avoidenceWeight = 5;
+    public static int avoidenceWeight = 7;
 
     public GameObject boidPrefab;
     [Range(1, 100)]
@@ -76,26 +76,26 @@ public class BoidController : MonoBehaviour
 
     private void OnBecameInvisible()
     {
-        foreach (Boid boid in boids)
-        {
-            Vector3 pos = boid.transform.position;
-            if (pos.x > 9)
-            {
-                boid.transform.position = new Vector3(-9, pos.y, pos.z);
-            }
-            else if (pos.x < -9)
-            {
-                boid.transform.position = new Vector3(9, pos.y, pos.z);
-            }
-            if (pos.y > 6f)
-            {
-                boid.transform.position = new Vector3(pos.x, -6, pos.z);
-            }
-            else if (pos.y < -6f)
-            {
-                boid.transform.position = new Vector3(pos.x, 6f, pos.z);
-            }
-        }
+        //foreach (Boid boid in boids)
+        //{
+        //    Vector3 pos = boid.transform.position;
+        //    if (pos.x > 9)
+        //    {
+        //        boid.transform.position = new Vector3(-9, pos.y, pos.z);
+        //    }
+        //    else if (pos.x < -9)
+        //    {
+        //        boid.transform.position = new Vector3(9, pos.y, pos.z);
+        //    }
+        //    if (pos.y > 6f)
+        //    {
+        //        boid.transform.position = new Vector3(pos.x, -6, pos.z);
+        //    }
+        //    else if (pos.y < -6f)
+        //    {
+        //        boid.transform.position = new Vector3(pos.x, 6f, pos.z);
+        //    }
+        //}
     }
 
     public static List<Boid> GetBoids()
