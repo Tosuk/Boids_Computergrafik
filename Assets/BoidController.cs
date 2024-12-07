@@ -14,7 +14,8 @@ public class BoidController : MonoBehaviour
     public static int alignWeight = 5;
     public static int cohesionWeight = 5;
     public static int avoidenceWeight = 7;
-    public static int visionRadius = 5;
+    public static int visionRadius = 1;
+    public static int fieldOfView = 270;
 
     //prefab for the boid
     [HideInInspector]
