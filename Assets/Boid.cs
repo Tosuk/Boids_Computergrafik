@@ -31,7 +31,7 @@ public class Boid : MonoBehaviour
         Vector3 separation = GetSeparation();
         if (separation != Vector3.zero)
         {
-            Vector3 separationForce = SteerAvoidence(separation);
+            Vector3 separationForce = SteerTorwards(separation);
             ApplyForce(separationForce * BoidController.avoidenceWeight);
         }
 
@@ -39,7 +39,7 @@ public class Boid : MonoBehaviour
         Vector3 alignment = GetAlignment();
         if (alignment != Vector3.zero)
         {
-            Vector3 alignmentForce = SteerAvoidence(alignment);
+            Vector3 alignmentForce = SteerTorwards(alignment);
             ApplyForce(alignmentForce * BoidController.alignWeight);
         }
 
@@ -47,7 +47,7 @@ public class Boid : MonoBehaviour
         Vector3 cohesion = GetCohesion();
         if (cohesion != Vector3.zero)
         {
-            Vector3 cohesionForce = SteerAvoidence(cohesion);
+            Vector3 cohesionForce = SteerTorwards(cohesion);
             ApplyForce(cohesionForce * BoidController.cohesionWeight);
         }
 
@@ -71,7 +71,7 @@ public class Boid : MonoBehaviour
         acceleration += force;
     }
 
-    private Vector3 SteerAvoidence(Vector3 avoid)
+    private Vector3 SteerTorwards(Vector3 avoid)
     {
         Vector3 a = avoid.normalized * maxSpeed - velocity;
         return Vector3.ClampMagnitude(a, maxForce);
