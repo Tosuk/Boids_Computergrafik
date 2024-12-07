@@ -16,7 +16,6 @@ public class Boid : MonoBehaviour
     public float separationRadius = 0.5f;
     public LayerMask obstacleMask; // Layermask for obstacles
 
-    BoidCharakteristic boidCharakteristic;
 
     private void Start()
     {
@@ -61,7 +60,7 @@ public class Boid : MonoBehaviour
             ApplyForce(Wander());
         }
 
-        keepWithinBounds(); // Boids innerhalb der Grenzen halten
+        //keepWithinBounds(); // Boids innerhalb der Grenzen halten
 
         // Geschwindigkeit aktualisieren
         velocity += acceleration * Time.deltaTime;
@@ -69,10 +68,6 @@ public class Boid : MonoBehaviour
         velocity.z = 0; // Z-Koordinate fixieren
         transform.position += velocity * Time.deltaTime;
 
-        // Position aktualisieren
-        Vector3 newPosition = transform.position;
-        newPosition.z = 0; // Z-Koordinate fixieren
-        transform.position = newPosition;
 
         // Rotation aktualisieren
         Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, velocity);
@@ -83,28 +78,28 @@ public class Boid : MonoBehaviour
     }
 
 
-    private void keepWithinBounds()
-    {
-        Vector3 desired = Vector3.zero;
-        if (transform.position.x < -16)
-        {
-            desired = new Vector3(maxSpeed, velocity.y, 0);
-        }
-        else if (transform.position.x > 16)
-        {
-            desired = new Vector3(-maxSpeed, velocity.y, 0);
-        }
-        if (transform.position.y < -9.9f)
-        {
-                desired = new Vector3(velocity.x, maxSpeed, 0);
-        }
-        else if (transform.position.y > 9.9f)
-        {
-            desired = new Vector3(velocity.x, -maxSpeed, 0);
-        }
-        Vector3 steer = desired - velocity;
-        ApplyForce(steer);
-    }
+    //private void keepWithinBounds()
+    //{
+    //    Vector3 desired = Vector3.zero;
+    //    if (transform.position.x < -16)
+    //    {
+    //        desired = new Vector3(maxSpeed, velocity.y, 0);
+    //    }
+    //    else if (transform.position.x > 16)
+    //    {
+    //        desired = new Vector3(-maxSpeed, velocity.y, 0);
+    //    }
+    //    if (transform.position.y < -9.9f)
+    //    {
+    //            desired = new Vector3(velocity.x, maxSpeed, 0);
+    //    }
+    //    else if (transform.position.y > 9.9f)
+    //    {
+    //        desired = new Vector3(velocity.x, -maxSpeed, 0);
+    //    }
+    //    Vector3 steer = desired - velocity;
+    //    ApplyForce(steer);
+    //}
 
     private void ApplyForce(Vector3 force)
     {
