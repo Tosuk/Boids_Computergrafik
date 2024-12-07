@@ -80,6 +80,7 @@ public class Boid : MonoBehaviour
     //////////////////////////////////////////////////////////////  
     //
     //Implementierung der Boid-Regeln
+    //
 
     public Vector3 GetSeparation()
     {
