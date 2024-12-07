@@ -43,7 +43,8 @@ public class Boid : MonoBehaviour
         Vector3 alignment = GetLineAlignment();
         if (alignment != Vector3.zero)
         {
-            ApplyForce(alignment * BoidController.alignWeight);
+            Vector3 alignmentForce = SteerAvoidence(alignment);
+            ApplyForce(alignmentForce * BoidController.alignWeight);
         }
 
         // Cohesion (Zusammenhalt)
@@ -107,7 +108,6 @@ public class Boid : MonoBehaviour
 
     private void ApplyForce(Vector3 force)
     {
-        //Debug.DrawRay(transform.position, force, Color.blue);
         acceleration += force;
     }
 
