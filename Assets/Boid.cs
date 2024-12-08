@@ -11,10 +11,8 @@ public class Boid : MonoBehaviour
     public float maxSpeed = 10f;
     public float maxForce = 0.03f;
     public float mass = 1f;
-    public float perceptionRadius = 1f;
-    public float avoidanceRadius = 1;
-    public float separationRadius = 0.5f;
-    public LayerMask obstacleMask; // Layermask for obstacles
+    public float perceptionRadius = 1;
+    public float separationRadius = 1;
 
 
     private void Start()
@@ -90,8 +88,7 @@ public class Boid : MonoBehaviour
             if (boid != this)
             {
                 Vector3 diff = transform.position - boid.transform.position;
-                //Debug.DrawRay(transform.position, diff, Color.green);
-                if (diff.magnitude < avoidanceRadius)
+                if (diff.magnitude < separationRadius)
                 {
                     avoidenceVector += diff;
                     avoidenceCount++;

@@ -106,10 +106,6 @@ MonoBehaviour:
   mass: 1
   perceptionRadius: 1
   avoidanceRadius: 0.5
-  separationRadius: 0.5
-  obstacleMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!65 &6214135954125349440
 BoxCollider:
   m_ObjectHideFlags: 0
