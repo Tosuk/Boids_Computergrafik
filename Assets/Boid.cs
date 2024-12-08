@@ -12,9 +12,7 @@ public class Boid : MonoBehaviour
     public float maxForce = 0.03f;
     public float mass = 1f;
     public float perceptionRadius = 1f;
-    public float avoidanceRadius = 1;
-    public float separationRadius = 0.5f;
-    public LayerMask obstacleMask; // Layermask for obstacles
+
 
 
     private void Start()
@@ -43,7 +41,7 @@ public class Boid : MonoBehaviour
         if (alignment != Vector3.zero)
         {
             Vector3 alignmentForce = SteerTorwards(alignment) * BoidController.alignWeight;
-            ApplyForce(alignmentForce);
+            ApplyForce(alignmentForce) ;
         }
 
         // Cohesion (Zusammenhalt)
@@ -82,28 +80,27 @@ public class Boid : MonoBehaviour
 
     public Vector3 GetSeparation()
     {
-        Vector3 avoidenceVector = Vector3.zero;
-        int avoidenceCount = 0; // Anzahl der Boids, die vermieden werden
+        Vector3 separationVector = Vector3.zero;
+        int neighbourCount = 0; // Anzahl der Boids, die vermieden werden
         List<Boid> boids = BoidController.GetBoids();
         foreach (Boid boid in boids)
         {
             if (boid != this)
             {
                 Vector3 diff = transform.position - boid.transform.position;
-                //Debug.DrawRay(transform.position, diff, Color.green);
-                if (diff.magnitude < avoidanceRadius)
+                float distance = Vector3.Distance(transform.position, boid.transform.position);
+                if (distance < perceptionRadius)
                 {
-                    avoidenceVector += diff;
-                    avoidenceCount++;
-                    //Debug.DrawRay(transform.position, diff, Color.red);
+                    separationVector += diff;
+                    neighbourCount++;
                 }
             }
         }
-        if (avoidenceCount > 0)
+        if (neighbourCount > 0)
         {
-            avoidenceVector /= avoidenceCount;
+            separationVector /= neighbourCount;
         }
-        return avoidenceVector.normalized;
+        return separationVector.normalized;
     }
 
     public Vector3 GetAlignment()
@@ -142,7 +139,6 @@ public class Boid : MonoBehaviour
                 float distance = Vector3.Distance(transform.position, boid.transform.position);
                 if (distance < perceptionRadius)
                 {
-                    //Debug.DrawRay(transform.position, boid.transform.position - transform.position, Color.blue);
                     averagePosition += boid.transform.position;
                     neighbourCount++;
                 }
