@@ -31,43 +31,35 @@ public class Boid : MonoBehaviour
     public void UpdateBoid()
     {
         // Seperation (Abstand halten)
-        Vector3 collisionAvoidDir = ObstacleAvoidance();
-        if (collisionAvoidDir != Vector3.zero)
+        Vector3 separation = GetSeparation();
+        if (separation != Vector3.zero)
         {
-            Vector3 avoidForce = SteerAvoidence(collisionAvoidDir);
-            ApplyForce(avoidForce * BoidController.avoidenceWeight);
+            Vector3 separationForce = SteerTorwards(separation) * BoidController.avoidenceWeight;
+            ApplyForce(separationForce);
         }
 
         // Alignment (Ausrichtung)
-        Vector3 alignment = GetLineAlignment();
+        Vector3 alignment = GetAlignment();
         if (alignment != Vector3.zero)
         {
-            Vector3 alignmentForce = SteerAvoidence(alignment);
-            ApplyForce(alignmentForce * BoidController.alignWeight);
+            Vector3 alignmentForce = SteerTorwards(alignment) * BoidController.alignWeight;
+            ApplyForce(alignmentForce);
         }
 
         // Cohesion (Zusammenhalt)
         Vector3 cohesion = GetCohesion();
         if (cohesion != Vector3.zero)
         {
-            Vector3 cohesionForce = SteerAvoidence(cohesion);
-            ApplyForce(cohesionForce * BoidController.cohesionWeight);
+            Vector3 cohesionForce = SteerTorwards(cohesion) * BoidController.cohesionWeight;
+            ApplyForce(cohesionForce);
         }
 
-        // Wanderkraft hinzufügen, wenn keine anderen Kräfte wirken
-        if (acceleration == Vector3.zero)
-        {
-            ApplyForce(Wander());
-        }
-
-        //keepWithinBounds(); // Boids innerhalb der Grenzen halten
 
         // Geschwindigkeit aktualisieren
         velocity += acceleration * Time.deltaTime;
         velocity = Vector3.ClampMagnitude(velocity, maxSpeed);
         velocity.z = 0; // Z-Koordinate fixieren
         transform.position += velocity * Time.deltaTime;
-
 
         // Rotation aktualisieren
         Quaternion targetRotation = Quaternion.LookRotation(Vector3.forward, velocity);
@@ -77,58 +69,18 @@ public class Boid : MonoBehaviour
         acceleration = Vector3.zero;
     }
 
-
-    //private void keepWithinBounds()
-    //{
-    //    Vector3 desired = Vector3.zero;
-    //    if (transform.position.x < -16)
-    //    {
-    //        desired = new Vector3(maxSpeed, velocity.y, 0);
-    //    }
-    //    else if (transform.position.x > 16)
-    //    {
-    //        desired = new Vector3(-maxSpeed, velocity.y, 0);
-    //    }
-    //    if (transform.position.y < -9.9f)
-    //    {
-    //            desired = new Vector3(velocity.x, maxSpeed, 0);
-    //    }
-    //    else if (transform.position.y > 9.9f)
-    //    {
-    //        desired = new Vector3(velocity.x, -maxSpeed, 0);
-    //    }
-    //    Vector3 steer = desired - velocity;
-    //    ApplyForce(steer);
-    //}
-
     private void ApplyForce(Vector3 force)
     {
         acceleration += force;
     }
 
-    private Vector3 SteerAvoidence(Vector3 avoid)
+    private Vector3 SteerTorwards(Vector3 avoid)
     {
         Vector3 a = avoid.normalized * maxSpeed - velocity;
         return Vector3.ClampMagnitude(a, maxForce);
     }
 
-    public bool IsHeadingForCollision()
-    {
-        Vector3 dir = velocity.normalized;
-        Ray ray = new Ray(transform.position, dir);
-        if (!Physics.SphereCast(ray, 0.27f, 5, obstacleMask))
-        {
-            Debug.DrawRay(transform.position, dir * 5, Color.green);
-            return true;
-        }
-        else
-        {
-            Debug.DrawRay(transform.position, dir * 5, Color.red);
-            return false;
-        }
-    }
-
-    public Vector3 ObstacleAvoidance()
+    public Vector3 GetSeparation()
     {
         Vector3 avoidenceVector = Vector3.zero;
         int avoidenceCount = 0; // Anzahl der Boids, die vermieden werden
@@ -154,7 +106,7 @@ public class Boid : MonoBehaviour
         return avoidenceVector.normalized;
     }
 
-    public Vector3 GetLineAlignment()
+    public Vector3 GetAlignment()
     {
         List<Boid> boids = BoidController.GetBoids();
         Vector3 averageHeading = Vector3.zero;
@@ -203,25 +155,5 @@ public class Boid : MonoBehaviour
         }
         return averagePosition.normalized;
     }
-
-    private Vector3 Wander()
-    {
-        float wanderRadius = 1.5f;
-        float wanderDistance = 2f;
-        float wanderJitter = 0.2f;
-
-        Vector3 wanderTarget = new Vector3(
-            Random.Range(-1f, 1f),
-            Random.Range(-1f, 1f),
-            0
-        );
-
-        wanderTarget = wanderTarget.normalized * wanderRadius;
-        Vector3 targetLocal = wanderTarget + new Vector3(0, wanderDistance, 0);
-        Vector3 targetWorld = transform.TransformPoint(targetLocal);
-
-        return (targetWorld - transform.position).normalized * maxForce;
-    }
-
 }
 
