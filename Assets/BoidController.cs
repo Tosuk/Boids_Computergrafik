@@ -178,62 +178,62 @@ public class BoidController : MonoBehaviour
     }
 
     //keeps the boids within the bounds of the camera
+    private void keepWithinBounds()
+    {
+        foreach (Boid boid in boids)
+        {
+            Vector3 desired = Vector3.zero;
+            bool isOutOfBounds = false;
+
+            if (boid.transform.position.x < -viewPortWidth + 3)
+            {
+                Debug.Log("viewPortWidth: " + (-viewPortWidth));
+                desired = new Vector3(boid.maxSpeed, boid.velocity.y, 0);
+                isOutOfBounds = true;
+            }
+            else if (boid.transform.position.x > viewPortWidth - 3)
+            {
+                desired = new Vector3(-boid.maxSpeed, boid.velocity.y, 0);
+                isOutOfBounds = true;
+            }
+            if (boid.transform.position.y < -viewPortHeight + 1)
+            {
+                desired = new Vector3(boid.velocity.x, boid.maxSpeed, 0);
+                isOutOfBounds = true;
+            }
+            else if (boid.transform.position.y > viewPortHeight - 1)
+            {
+                desired = new Vector3(boid.velocity.x, -boid.maxSpeed, 0);
+                isOutOfBounds = true;
+            }
+
+            if (isOutOfBounds)
+            {
+                Vector3 steer = desired - boid.velocity;
+                boid.acceleration += steer;
+            }
+        }
+    }
     //private void keepWithinBounds()
     //{
     //    foreach (Boid boid in boids)
     //    {
-    //        Vector3 desired = Vector3.zero;
-    //        bool isOutOfBounds = false;
-
-    //        if (boid.transform.position.x < -viewPortWidth + 3)
+    //        if (boid.transform.position.x < -viewPortWidth)
     //        {
-    //            Debug.Log("viewPortWidth: " + (-viewPortWidth));
-    //            desired = new Vector3(boid.maxSpeed, boid.velocity.y, 0);
-    //            isOutOfBounds = true;
+    //            boid.transform.position = new Vector3(viewPortWidth, boid.transform.position.y, 0);
     //        }
-    //        else if (boid.transform.position.x > viewPortWidth - 3)
+    //        if (boid.transform.position.x > viewPortWidth)
     //        {
-    //            desired = new Vector3(-boid.maxSpeed, boid.velocity.y, 0);
-    //            isOutOfBounds = true;
+    //            boid.transform.position = new Vector3(-viewPortWidth, boid.transform.position.y, 0);
     //        }
-    //        if (boid.transform.position.y < -viewPortHeight + 1)
+    //        if (boid.transform.position.y < -viewPortHeight)
     //        {
-    //            desired = new Vector3(boid.velocity.x, boid.maxSpeed, 0);
-    //            isOutOfBounds = true;
+    //            boid.transform.position = new Vector3(boid.transform.position.x, viewPortHeight, 0);
     //        }
-    //        else if (boid.transform.position.y > viewPortHeight - 1)
+    //        if (boid.transform.position.y > viewPortHeight)
     //        {
-    //            desired = new Vector3(boid.velocity.x, -boid.maxSpeed, 0);
-    //            isOutOfBounds = true;
-    //        }
-
-    //        if (isOutOfBounds)
-    //        {
-    //            Vector3 steer = desired - boid.velocity;
-    //            boid.acceleration += steer;
+    //            boid.transform.position = new Vector3(boid.transform.position.x, -viewPortHeight, 0);
     //        }
     //    }
     //}
-private void keepWithinBounds()
-{
-    foreach (Boid boid in boids)
-    {
-        if (boid.transform.position.x < -viewPortWidth)
-        {
-            boid.transform.position = new Vector3(viewPortWidth, boid.transform.position.y, 0);
-        }
-        if (boid.transform.position.x > viewPortWidth)
-        {
-            boid.transform.position = new Vector3(-viewPortWidth, boid.transform.position.y, 0);
-        }
-        if (boid.transform.position.y < -viewPortHeight)
-        {
-            boid.transform.position = new Vector3(boid.transform.position.x, viewPortHeight, 0);
-        }
-        if (boid.transform.position.y > viewPortHeight)
-        {
-            boid.transform.position = new Vector3(boid.transform.position.x, -viewPortHeight, 0);
-        }
-    }
-}
 }

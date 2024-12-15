@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 
 public class Boid : MonoBehaviour
 {
-    public Vector3 position;
     public Vector3 velocity;
     public Vector3 acceleration = new Vector3(1, 1, 0);
     public float maxSpeed = 10f;
@@ -85,9 +84,8 @@ public class Boid : MonoBehaviour
 
     private Vector3 SteerTorwards(Vector3 avoid)
     {
-        Vector3 a = avoid.normalized - velocity;
-        return a;
-        //return Vector3.ClampMagnitude(a, maxForce);
+        Vector3 a = avoid.normalized * maxSpeed - velocity;
+        return Vector3.ClampMagnitude(a, maxForce);
     }
 
     public Vector3 GetSeparation()
