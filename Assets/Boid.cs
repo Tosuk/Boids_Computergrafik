@@ -11,12 +11,20 @@ public class Boid : MonoBehaviour
     public float maxSpeed = 10f;
     public float maxForce = 0.03f;
     public float mass = 1f;
-    public float perceptionRadius = 1;
-    public float separationRadius = 1;
+
+    private SpriteRenderer spriteRenderer;
+    
+    public TrailRenderer trail;
+
+    //private Vector3 separationForce, alignmentForce, cohesionForce;
 
 
     private void Start()
     {
+        trail = GetComponent<TrailRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.color = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+
         velocity = new Vector3(Random.Range(-maxSpeed, maxSpeed), Random.Range(-maxSpeed, maxSpeed), 0);
         acceleration = Vector3.zero;
     }
@@ -34,6 +42,7 @@ public class Boid : MonoBehaviour
         {
             Vector3 separationForce = SteerTorwards(separation) * BoidController.avoidenceWeight;
             ApplyForce(separationForce);
+            //ApplyForce(separation * BoidController.avoidenceWeight);
         }
 
         // Alignment (Ausrichtung)
@@ -42,6 +51,7 @@ public class Boid : MonoBehaviour
         {
             Vector3 alignmentForce = SteerTorwards(alignment) * BoidController.alignWeight;
             ApplyForce(alignmentForce);
+            //ApplyForce(alignment * BoidController.alignWeight);
         }
 
         // Cohesion (Zusammenhalt)
@@ -50,6 +60,7 @@ public class Boid : MonoBehaviour
         {
             Vector3 cohesionForce = SteerTorwards(cohesion) * BoidController.cohesionWeight;
             ApplyForce(cohesionForce);
+            //ApplyForce(cohesion * BoidController.cohesionWeight);
         }
 
 
@@ -74,8 +85,9 @@ public class Boid : MonoBehaviour
 
     private Vector3 SteerTorwards(Vector3 avoid)
     {
-        Vector3 a = avoid.normalized * maxSpeed - velocity;
-        return Vector3.ClampMagnitude(a, maxForce);
+        Vector3 a = avoid.normalized - velocity;
+        return a;
+        //return Vector3.ClampMagnitude(a, maxForce);
     }
 
     public Vector3 GetSeparation()
@@ -88,7 +100,7 @@ public class Boid : MonoBehaviour
             if (boid != this)
             {
                 Vector3 diff = transform.position - boid.transform.position;
-                if (diff.magnitude < separationRadius)
+                if (diff.magnitude < BoidController.separationRadius)
                 {
                     avoidenceVector += diff;
                     avoidenceCount++;
@@ -113,8 +125,13 @@ public class Boid : MonoBehaviour
             if (boid != this)
             {
                 float distance = Vector3.Distance(transform.position, boid.transform.position);
-                if (distance < perceptionRadius)
+                if (distance < BoidController.alignmentRadius)
                 {
+                    if (Mathf.Abs(boid.velocity.x - velocity.x) <= 0.3f &&
+                        Mathf.Abs(boid.velocity.y - velocity.y) <= 0.3f)
+                    {
+                        spriteRenderer.color = boid.spriteRenderer.color;
+                    }
                     averageHeading += boid.velocity;
                     neighbourCount++;
                 }
@@ -137,7 +154,7 @@ public class Boid : MonoBehaviour
             if (boid != this)
             {
                 float distance = Vector3.Distance(transform.position, boid.transform.position);
-                if (distance < perceptionRadius)
+                if (distance < BoidController.cohesionRadius)
                 {
                     //Debug.DrawRay(transform.position, boid.transform.position - transform.position, Color.blue);
                     averagePosition += boid.transform.position;
