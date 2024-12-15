@@ -5,9 +5,8 @@ using UnityEngine.UIElements;
 
 public class Boid : MonoBehaviour
 {
-    public Vector3 position;
     public Vector3 velocity;
-    public Vector3 acceleration = new Vector3(1, 1, 0);
+    public Vector3 acceleration;
     public float maxSpeed = 10f;
     public float maxForce = 0.03f;
     public float mass = 1f;
@@ -86,15 +85,20 @@ public class Boid : MonoBehaviour
     private Vector3 SteerTorwards(Vector3 avoid)
     {
         Vector3 a = avoid.normalized * maxSpeed - velocity;
+      
         return Vector3.ClampMagnitude(a, maxForce);
     }
-
+    //
+    //
+    //
     //
     //
     //Implentiere hier die drei Regeln für Boids
     //
     //
-
+    //
+    //
+    //
     public Vector3 GetSeparation()
     {
         return Vector3.zero;
