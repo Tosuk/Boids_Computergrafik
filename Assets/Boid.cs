@@ -12,7 +12,7 @@ public class Boid : MonoBehaviour
     public float maxForce = 0.03f;
     public float mass = 1f;
 
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
     
     public TrailRenderer trail;
 
@@ -85,89 +85,29 @@ public class Boid : MonoBehaviour
 
     private Vector3 SteerTorwards(Vector3 avoid)
     {
-        Vector3 a = avoid.normalized - velocity;
-        return a;
-        //return Vector3.ClampMagnitude(a, maxForce);
+        Vector3 a = avoid.normalized * maxSpeed - velocity;
+        return Vector3.ClampMagnitude(a, maxForce);
     }
+
+    //
+    //
+    //Implentiere hier die drei Regeln für Boids
+    //
+    //
 
     public Vector3 GetSeparation()
     {
-        Vector3 avoidenceVector = Vector3.zero;
-        int avoidenceCount = 0; // Anzahl der Boids, die vermieden werden
-        List<Boid> boids = BoidController.GetBoids();
-        foreach (Boid boid in boids)
-        {
-            if (boid != this)
-            {
-                Vector3 diff = transform.position - boid.transform.position;
-                if (diff.magnitude < BoidController.separationRadius)
-                {
-                    avoidenceVector += diff;
-                    avoidenceCount++;
-                    //Debug.DrawRay(transform.position, diff, Color.red);
-                }
-            }
-        }
-        if (avoidenceCount > 0)
-        {
-            avoidenceVector /= avoidenceCount;
-        }
-        return avoidenceVector.normalized;
+        return Vector3.zero;
     }
 
     public Vector3 GetAlignment()
     {
-        List<Boid> boids = BoidController.GetBoids();
-        Vector3 averageHeading = Vector3.zero;
-        int neighbourCount = 0;
-        foreach (Boid boid in boids)
-        {
-            if (boid != this)
-            {
-                float distance = Vector3.Distance(transform.position, boid.transform.position);
-                if (distance < BoidController.alignmentRadius)
-                {
-                    if (Mathf.Abs(boid.velocity.x - velocity.x) <= 0.3f &&
-                        Mathf.Abs(boid.velocity.y - velocity.y) <= 0.3f)
-                    {
-                        spriteRenderer.color = boid.spriteRenderer.color;
-                    }
-                    averageHeading += boid.velocity;
-                    neighbourCount++;
-                }
-            }
-        }
-        if (neighbourCount > 0)
-        {
-            averageHeading /= neighbourCount;
-        }
-        return averageHeading.normalized;
+        return Vector3.zero;
     }
 
     public Vector3 GetCohesion()
     {
-        List<Boid> boids = BoidController.GetBoids();
-        Vector3 averagePosition = Vector3.zero;
-        int neighbourCount = 0;
-        foreach (Boid boid in boids)
-        {
-            if (boid != this)
-            {
-                float distance = Vector3.Distance(transform.position, boid.transform.position);
-                if (distance < BoidController.cohesionRadius)
-                {
-                    //Debug.DrawRay(transform.position, boid.transform.position - transform.position, Color.blue);
-                    averagePosition += boid.transform.position;
-                    neighbourCount++;
-                }
-            }
-        }
-        if (neighbourCount > 0)
-        {
-            averagePosition /= neighbourCount;
-            averagePosition -= transform.position;
-        }
-        return averagePosition.normalized;
+        return Vector3.zero;
     }
 }
 
