@@ -14,15 +14,21 @@ public class BoidController : MonoBehaviour
     public static int alignWeight = 5;
     public static int cohesionWeight = 5;
     public static int avoidenceWeight = 7;
-    public static int visionRadius = 1;
-    public static int fieldOfView = 270;
+    public static float separationRadius = 0.5f;
+    public static float alignmentRadius = 1f;
+    public static float cohesionRadius = 1f;
 
     //prefab for the boid
     [HideInInspector]
     public GameObject boidPrefab;
     [HideInInspector]
     public Camera cam;
+    [HideInInspector]
     public int viewPortSize = 10;
+    [HideInInspector]
+    public float viewPortWidthAspectRatio= 1.6f;
+    [HideInInspector]
+    public float viewPortHeightAspectRatio = 0.9f;
     private float viewPortWidth;
     private float viewPortHeight;
 
@@ -48,6 +54,7 @@ public class BoidController : MonoBehaviour
         BoidCount();
         keepWithinBounds();
     }
+
 
     //draws the gizmos for the boids for debugging purposes
     private void OnDrawGizmos()
@@ -156,50 +163,77 @@ public class BoidController : MonoBehaviour
 
     internal void UpdateBounds()
     {
-        viewPortHeight = 0.9f;
-        viewPortWidth = 1.6f;
-        viewPortHeight *= viewPortSize;
-        viewPortWidth *= viewPortSize;
+        viewPortHeight = viewPortSize * viewPortHeightAspectRatio;
+        viewPortWidth = viewPortSize * viewPortWidthAspectRatio;
         Debug.Log("viewPortHeight: " + viewPortHeight);
         Debug.Log("viewPortWidth" + viewPortWidth);
     }
 
-    //keeps the boids within the bounds of the camera
-    private void keepWithinBounds()
+    public void setActiveBoidTrail(bool active)
     {
         foreach (Boid boid in boids)
         {
-            Vector3 desired = Vector3.zero;
-            bool isOutOfBounds = false;
+            boid.trail.enabled = active;
+        }  
+    }
 
-            if (boid.transform.position.x < -viewPortWidth)
-            {
-                Debug.Log("Out of bounds: " + boid.transform.position);
-                Debug.Log("viewPortWidth: " + viewPortWidth);
-                desired = new Vector3(boid.maxSpeed, boid.velocity.y, 0);
-                isOutOfBounds = true;
-            }
-            else if (boid.transform.position.x > viewPortWidth)
-            {
-                desired = new Vector3(-boid.maxSpeed, boid.velocity.y, 0);
-                isOutOfBounds = true;
-            }
-            if (boid.transform.position.y < -viewPortHeight)
-            {
-                desired = new Vector3(boid.velocity.x, boid.maxSpeed, 0);
-                isOutOfBounds = true;
-            }
-            else if (boid.transform.position.y > viewPortHeight)
-            {
-                desired = new Vector3(boid.velocity.x, -boid.maxSpeed, 0);
-                isOutOfBounds = true;
-            }
+    //keeps the boids within the bounds of the camera
+    //private void keepWithinBounds()
+    //{
+    //    foreach (Boid boid in boids)
+    //    {
+    //        Vector3 desired = Vector3.zero;
+    //        bool isOutOfBounds = false;
 
-            if (isOutOfBounds)
-            {
-                Vector3 steer = desired - boid.velocity;
-                boid.acceleration += steer;
-            }
+    //        if (boid.transform.position.x < -viewPortWidth + 3)
+    //        {
+    //            Debug.Log("viewPortWidth: " + (-viewPortWidth));
+    //            desired = new Vector3(boid.maxSpeed, boid.velocity.y, 0);
+    //            isOutOfBounds = true;
+    //        }
+    //        else if (boid.transform.position.x > viewPortWidth - 3)
+    //        {
+    //            desired = new Vector3(-boid.maxSpeed, boid.velocity.y, 0);
+    //            isOutOfBounds = true;
+    //        }
+    //        if (boid.transform.position.y < -viewPortHeight + 1)
+    //        {
+    //            desired = new Vector3(boid.velocity.x, boid.maxSpeed, 0);
+    //            isOutOfBounds = true;
+    //        }
+    //        else if (boid.transform.position.y > viewPortHeight - 1)
+    //        {
+    //            desired = new Vector3(boid.velocity.x, -boid.maxSpeed, 0);
+    //            isOutOfBounds = true;
+    //        }
+
+    //        if (isOutOfBounds)
+    //        {
+    //            Vector3 steer = desired - boid.velocity;
+    //            boid.acceleration += steer;
+    //        }
+    //    }
+    //}
+private void keepWithinBounds()
+{
+    foreach (Boid boid in boids)
+    {
+        if (boid.transform.position.x < -viewPortWidth)
+        {
+            boid.transform.position = new Vector3(viewPortWidth, boid.transform.position.y, 0);
+        }
+        if (boid.transform.position.x > viewPortWidth)
+        {
+            boid.transform.position = new Vector3(-viewPortWidth, boid.transform.position.y, 0);
+        }
+        if (boid.transform.position.y < -viewPortHeight)
+        {
+            boid.transform.position = new Vector3(boid.transform.position.x, viewPortHeight, 0);
+        }
+        if (boid.transform.position.y > viewPortHeight)
+        {
+            boid.transform.position = new Vector3(boid.transform.position.x, -viewPortHeight, 0);
         }
     }
+}
 }
