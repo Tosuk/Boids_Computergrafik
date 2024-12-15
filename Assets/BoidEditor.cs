@@ -76,6 +76,6 @@ public class BoidEditor : Editor
                 boidController.ResetBoids();
             }
         }
-
+        //Mirkan war hier
     }
 }
