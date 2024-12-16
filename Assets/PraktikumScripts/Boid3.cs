@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Boid : MonoBehaviour
+public class Boid3 : MonoBehaviour
 {
     public Vector3 velocity;
     public Vector3 acceleration = new Vector3(1, 1, 0);
@@ -88,6 +88,7 @@ public class Boid : MonoBehaviour
         return Vector3.ClampMagnitude(a, maxForce);
     }
 
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////// Hier fehlen die Separation, Alignment und Cohesion implementieren ////////////////////////////////////////
@@ -95,19 +96,77 @@ public class Boid : MonoBehaviour
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
     public Vector3 GetCohesion()
     {
-        return Vector3.zero;
-    }
-    public Vector3 GetAlignment()
-    {
-        return Vector3.zero;
-    }
-    public Vector3 GetSeparation()
-    {
-        return Vector3.zero;
+        List<Boid> boids = BoidController.GetBoids();
+        Vector3 averagePosition = Vector3.zero;
+        int neighbourCount = 0;
+        foreach (Boid boid in boids)
+        {
+            if (boid != this)
+            {
+                float distance = Vector3.Distance(transform.position, boid.transform.position);
+                if (distance < BoidController.cohesionRadius)
+                {
+                    averagePosition += boid.transform.position;
+                    neighbourCount++;
+                }
+            }
+        }
+        if (neighbourCount > 0)
+        {
+            averagePosition /= neighbourCount;
+            averagePosition -= transform.position;
+        }
+        return averagePosition.normalized;
     }
 
+    public Vector3 GetAlignment()
+    {
+        List<Boid> boids = BoidController.GetBoids();
+        Vector3 averageHeading = Vector3.zero;
+        int neighbourCount = 0;
+        foreach (Boid boid in boids)
+        {
+            if (boid != this)
+            {
+                float distance = Vector3.Distance(transform.position, boid.transform.position);
+                if (distance < BoidController.alignmentRadius)
+                {
+                    averageHeading += boid.velocity;
+                    neighbourCount++;
+                }
+            }
+        }
+        if (neighbourCount > 0)
+        {
+            averageHeading /= neighbourCount;
+        }
+        return averageHeading.normalized;
+    }
+
+    public Vector3 GetSeparation()
+    {
+        Vector3 avoidenceVector = Vector3.zero;
+        int avoidenceCount = 0; // Anzahl der Boids, die vermieden werden
+        List<Boid> boids = BoidController.GetBoids();
+        foreach (Boid boid in boids)
+        {
+            if (boid != this)
+            {
+                Vector3 diff = transform.position - boid.transform.position;
+                if (diff.magnitude < BoidController.separationRadius)
+                {
+                    avoidenceVector += diff;
+                    avoidenceCount++;
+                }
+            }
+        }
+        if (avoidenceCount > 0)
+        {
+            avoidenceVector /= avoidenceCount;
+        }
+        return avoidenceVector.normalized;
+    }
 }
 

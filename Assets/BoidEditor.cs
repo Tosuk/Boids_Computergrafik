@@ -34,7 +34,7 @@ public class BoidEditor : Editor
         // Add a bold label
         BoidController.alignWeight = EditorGUILayout.IntSlider("Align Weight", BoidController.alignWeight, 0, 10);
         BoidController.cohesionWeight = EditorGUILayout.IntSlider("Cohesion Weight", BoidController.cohesionWeight, 0, 10);
-        BoidController.avoidenceWeight = EditorGUILayout.IntSlider("Avoidence Weight", BoidController.avoidenceWeight, 0, 10);
+        BoidController.separationWeight = EditorGUILayout.IntSlider("Avoidence Weight", BoidController.separationWeight, 0, 10);
 
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Boid Vision Settings", EditorStyles.boldLabel);

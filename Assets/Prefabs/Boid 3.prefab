@@ -10,11 +10,11 @@ GameObject:
   m_Component:
   - component: {fileID: 26708329953328328}
   - component: {fileID: 7305746496424592342}
-  - component: {fileID: 2902957706066316070}
+  - component: {fileID: 889515282234157271}
   - component: {fileID: 6214135954125349440}
   - component: {fileID: -2922236800779787078}
   m_Layer: 0
-  m_Name: Boid
+  m_Name: Boid 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2902957706066316070
+--- !u!114 &889515282234157271
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -96,15 +96,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5170309424040522722}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceabcf46b9d2ad945b26764478fe6293, type: 3}
+  m_Script: {fileID: 11500000, guid: 6eeeadfd8659929459fbc2b885b436e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  position: {x: 0, y: 0, z: 0}
   velocity: {x: 0, y: 0, z: 0}
   acceleration: {x: 1, y: 1, z: 0}
-  maxSpeed: 8
-  maxForce: 1
+  maxSpeed: 10
+  maxForce: 0.03
   mass: 1
+  spriteRenderer: {fileID: 0}
   trail: {fileID: 0}
 --- !u!65 &6214135954125349440
 BoxCollider:

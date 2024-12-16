@@ -13,13 +13,12 @@ public class BoidController : MonoBehaviour
     //weights for the boid behaviours and the vision radius
     public static int alignWeight = 5;
     public static int cohesionWeight = 5;
-    public static int avoidenceWeight = 7;
+    public static int separationWeight = 7;
     public static float separationRadius = 0.5f;
     public static float alignmentRadius = 1f;
     public static float cohesionRadius = 1f;
 
     //prefab for the boid
-    [HideInInspector]
     public GameObject boidPrefab;
     [HideInInspector]
     public Camera cam;
@@ -53,6 +52,48 @@ public class BoidController : MonoBehaviour
     {
         BoidCount();
         keepWithinBounds();
+        BoidUpdateColor();
+    }
+
+    private void BoidUpdateColor()
+    {
+        foreach (Boid boid in boids)
+        {
+            List<Boid> neighbours = GetNeighbours(boid, alignmentRadius);
+            if (neighbours.Count > 0)
+            {
+                Vector3 averageVelocity = Vector3.zero;
+                foreach (Boid neighbour in neighbours)
+                {
+                    averageVelocity += neighbour.velocity;
+                }
+                averageVelocity /= neighbours.Count;
+
+                if (Mathf.Abs(averageVelocity.x - boid.velocity.x) <= 0.3f &&
+                    Mathf.Abs(averageVelocity.y - boid.velocity.y) <= 0.3f)
+                {
+                    boid.spriteRenderer.color = neighbours[0].spriteRenderer.color;
+                }
+            }
+        }
+    }
+
+    private List<Boid> GetNeighbours(Boid boid, float radius)
+    {
+        List<Boid> neighbours = new List<Boid>();
+        foreach (Boid otherBoid in boids)
+        {
+            if (otherBoid != boid)
+            {
+                float distance = Vector3.Distance(boid.transform.position, otherBoid.transform.position);
+                if (distance < radius)
+                {
+                    neighbours.Add(otherBoid);
+                }
+            }
+        }
+        return neighbours;
+
     }
 
 
@@ -214,26 +255,4 @@ public class BoidController : MonoBehaviour
             }
         }
     }
-    //private void keepWithinBounds()
-    //{
-    //    foreach (Boid boid in boids)
-    //    {
-    //        if (boid.transform.position.x < -viewPortWidth)
-    //        {
-    //            boid.transform.position = new Vector3(viewPortWidth, boid.transform.position.y, 0);
-    //        }
-    //        if (boid.transform.position.x > viewPortWidth)
-    //        {
-    //            boid.transform.position = new Vector3(-viewPortWidth, boid.transform.position.y, 0);
-    //        }
-    //        if (boid.transform.position.y < -viewPortHeight)
-    //        {
-    //            boid.transform.position = new Vector3(boid.transform.position.x, viewPortHeight, 0);
-    //        }
-    //        if (boid.transform.position.y > viewPortHeight)
-    //        {
-    //            boid.transform.position = new Vector3(boid.transform.position.x, -viewPortHeight, 0);
-    //        }
-    //    }
-    //}
 }
