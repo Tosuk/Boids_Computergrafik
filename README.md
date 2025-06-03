@@ -1,4 +1,4 @@
-### Boids
+# Boids
 Das ist ein Projekt mit dem Ziel eine Praktikumsaufgabe für Studierende zu erstellen. <br>
 Die Aufgabe war es Schwärme/Boids in ihrer rudimentären Form zu programmieren, die von Craig W. Reynolds beschrieben wurden.
 
